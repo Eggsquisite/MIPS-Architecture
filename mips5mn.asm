@@ -225,7 +225,21 @@ Done:
 .globl	countWays
 .ent	countWays
 countWays:
+	subu	$sp, $sp, 12
+	sw	$ra, ($sp)
+	sw	$s0, 4($sp)
+	sw	$s1, 8($sp)
 
+doAnother:
+	
+
+
+
+
+	lw	$ra, ($sp)
+	lw	$s0, 4($sp)
+	lw	$s1, 8($sp)
+	addu	$sp, $sp, 12
 	jr	$ra
 
 .end countWays
@@ -266,7 +280,7 @@ inputAns:
 	bne $v0, 'y', printErr
 	bne $v0, 'n', printErr
 
-	j 		dead
+	j 	dead
 
 printErr:
 	la 	$a0, newLine
