@@ -97,6 +97,9 @@ doAnother:
 	lw	$a0, stairCount
 	jal	countWays
 
+	lw	$t0, stairCount
+	subu	$t0, $t0, 1
+	subu	$v0, $v0, $t0
 	sw	$v0, waysCount
 
 # ----
@@ -130,11 +133,15 @@ doAnother:
 .globl	prtNewline
 .ent	prtNewline
 prtNewline:
+	subu	$sp, $sp, 4
+	sw		$ra, ($sp)
 
 	la 	$a0, newLine
 	li 	$v0, 4
 	syscall
 
+	lw		$ra, ($sp)
+	addu	$sp, $sp, 4
 	jr	$ra
 
 .end	prtNewline
@@ -151,7 +158,35 @@ prtNewline:
 .globl	prtResult
 .ent	prtResult
 prtResult:
+	subu	$sp, $sp, 4
+	sw 	$ra, ($sp)
 
+	la 	$a0, newLine
+	li 	$v0, 4
+	syscall
+
+	la 	$a0, cntMsg1
+	li 	$v0, 4
+	syscall
+
+	lw 	$a0, stairCount
+	li 	$v0, 1
+	syscall
+
+	la 	$a0, cntMsg2
+	li 	$v0, 4
+	syscall
+
+	lw 	$a0, waysCount
+	li 	$v0, 1
+	syscall
+
+	la 	$a0, cntMsg3
+	li 	$v0, 4
+	syscall
+
+	lw	$ra, ($sp)
+	addu	$sp, $sp, 4
 	jr	$ra
 
 .end	prtResult
@@ -225,7 +260,27 @@ Done:
 .globl	countWays
 .ent	countWays
 countWays:
+	subu	$sp, $sp, 8
+	sw 	$ra, ($sp)
+	sw 	$s0, 4($sp)
+				
+	ble 	$a0, 1, countDone		
 
+	move	$s0, $a0				# countWays(n-1)
+	sub 	$a0, $a0, 1
+	jal		countWays
+
+	move 	$a0, $s0				# countWays(n-2)
+	sub 	$a0, $a0, 2
+	move 	$s0, $v0
+	jal 	countWays
+
+	addu	$v0, $v0, 1
+
+countDone:
+	lw 	$ra, ($sp)
+	lw 	$s0, 4($sp)
+	addu	$sp, $sp, 8
 	jr	$ra
 
 .end countWays
