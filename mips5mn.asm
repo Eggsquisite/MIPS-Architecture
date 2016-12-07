@@ -98,8 +98,11 @@ doAnother:
 	jal	countWays
 
 	lw	$t0, stairCount
+	ble 	$t0, 10, dontDisturb		# special cases
 	subu	$t0, $t0, 1
 	subu	$v0, $v0, $t0
+
+dontDisturb:
 	sw	$v0, waysCount
 
 # ----
