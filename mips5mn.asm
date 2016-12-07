@@ -225,21 +225,7 @@ Done:
 .globl	countWays
 .ent	countWays
 countWays:
-	subu	$sp, $sp, 12
-	sw	$ra, ($sp)
-	sw	$s0, 4($sp)
-	sw	$s1, 8($sp)
 
-doAnother:
-	
-
-
-
-
-	lw	$ra, ($sp)
-	lw	$s0, 4($sp)
-	lw	$s1, 8($sp)
-	addu	$sp, $sp, 12
 	jr	$ra
 
 .end countWays
@@ -264,9 +250,8 @@ doAnother:
 .globl	continue
 .ent	continue
 continue:
-	subu	$sp, $sp, 8
+	subu	$sp, $sp, 4
 	sw	$ra, ($sp)
-	sw	$s0, 4($sp)
 
 	la 	$a0, qPmt
 	li 	$v0, 4
@@ -275,12 +260,9 @@ continue:
 inputAns:
 	li 	$v0, 12
 	syscall
-	sb 	$v0, ans
 
-	bne $v0, 'y', printErr
-	bne $v0, 'n', printErr
-
-	j 	dead
+	beq $v0, 110, ansNo
+	beq	$v0, 121, ansYes
 
 printErr:
 	la 	$a0, newLine
@@ -297,10 +279,29 @@ printErr:
 
 	j 	inputAns
 
-dead:
+ansYes:
+	la 	$a0, newLine
+	li 	$v0, 4
+	syscall
+
+	la 	$a0, newLine
+	li 	$v0, 4
+	syscall
+
+	la	$v0, TRUE
+	j	done
+
+ansNo:
+	la 	$a0, newLine
+	li 	$v0, 4
+	syscall
+
+	la	$v0, FALSE
+	j 	done
+
+done:
 	lw	$ra, ($sp)
-	lw	$s0, 4($sp)
-	addu	$sp, $sp, 8
+	addu	$sp, $sp, 4
 	jr	$ra
 
 .end	continue
